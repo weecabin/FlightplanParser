@@ -1,5 +1,5 @@
 $(function() {
-  console.log('Parse Flightplan');
+  console.log('Parse Flightplan 001');
 });
 
 var statusbox;
@@ -69,9 +69,9 @@ function Parse()
     let route = xmlDoc.getElementsByTagName("waypoint-identifier");
     AddStatus(JSON.stringify(route));
     AddStatus(route.length+" route points");
-    let i = 0;
     AddStatus("Route with lat/lon...");
     let wptable = new MyTable(["Name","Latitude","Longitude"]);
+    AddStatus("about to ebpnter route loop");
     for(let routepoint of route)
     {
       AddStatus("in for(let routepoint of route)");
