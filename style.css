@@ -2,6 +2,12 @@ body {
   background: #fafafa;
 }
 
+.divider {
+  height: 2px;
+  clear: both;
+  /* background-color: #D5CF8E;  */
+} 
+
 #fp
 {
   width:400px;
