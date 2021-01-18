@@ -41,7 +41,7 @@ function Parse()
 
     // create a lookup table of waypoints.
     let waypoints = xmlDoc.getElementsByTagName("waypoint");
-    let wplookup=[];
+    var wplookup=[];
     for(let waypoint of waypoints)
     { 
       let wpobj = {id:"",lat:"",lon:""};
@@ -74,7 +74,9 @@ function Parse()
     let wptable = new MyTable(["Name","Latitude","Longitude"]);
     for(let routepoint of route)
     {
+      AddStatus("in for(let routepoint of route)");
       let wp = routepoint.childNodes[0].nodeValue;
+      AddStatus("about to setup lat");
       let lat = wplookup.filter(x=>x.id==wp)[0].lat;
       let lon = wplookup.filter(x=>x.id==wp)[0].lon;
       let wpstr = wp+" = ("+lat+","+lon+")";
