@@ -35,12 +35,14 @@ class MyTable
   // headings is an array of headings
   constructor(headings)
   {
+    AddStatus("in MyTable constructor")
     this.tbl="<table><tr>";
     for(let heading of headings)
     {
       this.tbl += "<th>"+heading+"</th>";
     }
     this.tbl += "</tr>"
+    AddStatus("exiting constructor")
   }
   AddRow(values)
   {
