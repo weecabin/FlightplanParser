@@ -1,16 +1,17 @@
 class MyTable
 {
   // headings is an array of headings
-  constructor(headings)
+  constructor(headings,tblid="",tblclass="")
   {
-    AddStatus("in MyTable constructor")
-    this.tbl="<table><tr>";
+    let tblidstr=tblid.length>0?" id=\""+tblid+"\"":"";
+    let tblclassstr=tblid.length>0?" class=\""+tblclass+"\"":"";
+    this.tbl="<table"+tblidstr+tblclassstr+"><tr>";
+    AddStatus("table tag="+this.tbl);
     for(let heading of headings)
     {
       this.tbl += "<th>"+heading+"</th>";
     }
     this.tbl += "</tr>"
-    AddStatus("exiting constructor")
   }
   AddRow(values)
   {
@@ -28,9 +29,8 @@ class MyTable
   }
 }
 
-
 $(function() {
-  console.log('Parse Flightplan 001');
+  console.log('Parse Flightplan');
 });
 
 var statusbox;
@@ -72,7 +72,7 @@ function Parse()
 
     // create a lookup table of waypoints.
     let waypoints = xmlDoc.getElementsByTagName("waypoint");
-    var wplookup=[];
+    let wplookup=[];
     for(let waypoint of waypoints)
     { 
       let wpobj = {id:"",lat:"",lon:""};
@@ -100,8 +100,9 @@ function Parse()
     let route = xmlDoc.getElementsByTagName("waypoint-identifier");
     AddStatus(JSON.stringify(route));
     AddStatus(route.length+" route points");
+    let i = 0;
     AddStatus("Route with lat/lon...");
-    let wptable = new MyTable(["Name","Latitude","Longitude"]);
+    let wptable = new MyTable(["Name","Latitude","Longitude"],"routelatlon","floatleft");
     for(let routepoint of route)
     {
       let wp = routepoint.childNodes[0].nodeValue;
@@ -115,6 +116,6 @@ function Parse()
   }
   catch(err)
   {
-    AddStatus(err);
+    AddStatus(err.message);
   }
 }
