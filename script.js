@@ -112,6 +112,6 @@ function Parse()
   }
   catch(err)
   {
-    AddStatus(err.message);
+    AddStatus(err);
   }
 }
