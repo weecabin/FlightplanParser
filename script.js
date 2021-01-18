@@ -1,3 +1,34 @@
+class MyTable
+{
+  // headings is an array of headings
+  constructor(headings)
+  {
+    AddStatus("in MyTable constructor")
+    this.tbl="<table><tr>";
+    for(let heading of headings)
+    {
+      this.tbl += "<th>"+heading+"</th>";
+    }
+    this.tbl += "</tr>"
+    AddStatus("exiting constructor")
+  }
+  AddRow(values)
+  {
+    this.tbl+="<tr>"
+    for(let value of values)
+    {
+      this.tbl += "<td>"+value+"</td>"
+    }
+    this.tbl += "</tr>"
+  }
+  GetHTML()
+  {
+    this.tbl+="</table>"
+    return this.tbl;
+  }
+}
+
+
 $(function() {
   console.log('Parse Flightplan 001');
 });
@@ -28,36 +59,6 @@ function dropfp(event)
 function AddStatus(str)
 {
   statusbox.value += "\n"+str;
-}
-
-class MyTable
-{
-  // headings is an array of headings
-  constructor(headings)
-  {
-    AddStatus("in MyTable constructor")
-    this.tbl="<table><tr>";
-    for(let heading of headings)
-    {
-      this.tbl += "<th>"+heading+"</th>";
-    }
-    this.tbl += "</tr>"
-    AddStatus("exiting constructor")
-  }
-  AddRow(values)
-  {
-    this.tbl+="<tr>"
-    for(let value of values)
-    {
-      this.tbl += "<td>"+value+"</td>"
-    }
-    this.tbl += "</tr>"
-  }
-  GetHTML()
-  {
-    this.tbl+="</table>"
-    return this.tbl;
-  }
 }
 
 var testcount=0;
