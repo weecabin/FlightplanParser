@@ -30,6 +30,34 @@ function AddStatus(str)
   statusbox.value += "\n"+str;
 }
 
+class MyTable
+{
+  // headings is an array of headings
+  constructor(headings)
+  {
+    this.tbl="<table><tr>";
+    for(let heading of headings)
+    {
+      this.tbl += "<th>"+heading+"</th>";
+    }
+    this.tbl += "</tr>"
+  }
+  AddRow(values)
+  {
+    this.tbl+="<tr>"
+    for(let value of values)
+    {
+      this.tbl += "<td>"+value+"</td>"
+    }
+    this.tbl += "</tr>"
+  }
+  GetHTML()
+  {
+    this.tbl+="</table>"
+    return this.tbl;
+  }
+}
+
 var testcount=0;
 function Parse()
 {
@@ -71,12 +99,9 @@ function Parse()
     AddStatus(route.length+" route points");
     AddStatus("Route with lat/lon...");
     let wptable = new MyTable(["Name","Latitude","Longitude"]);
-    AddStatus("about to ebpnter route loop");
     for(let routepoint of route)
     {
-      AddStatus("in for(let routepoint of route)");
       let wp = routepoint.childNodes[0].nodeValue;
-      AddStatus("about to setup lat");
       let lat = wplookup.filter(x=>x.id==wp)[0].lat;
       let lon = wplookup.filter(x=>x.id==wp)[0].lon;
       let wpstr = wp+" = ("+lat+","+lon+")";
@@ -88,33 +113,5 @@ function Parse()
   catch(err)
   {
     AddStatus(err.message);
-  }
-}
-
-class MyTable
-{
-  // headings is an array of headings
-  constructor(headings)
-  {
-    this.tbl="<table><tr>";
-    for(let heading of headings)
-    {
-      this.tbl += "<th>"+heading+"</th>";
-    }
-    this.tbl += "</tr>"
-  }
-  AddRow(values)
-  {
-    this.tbl+="<tr>"
-    for(let value of values)
-    {
-      this.tbl += "<td>"+value+"</td>"
-    }
-    this.tbl += "</tr>"
-  }
-  GetHTML()
-  {
-    this.tbl+="</table>"
-    return this.tbl;
   }
 }
