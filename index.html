@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width" />
+  <title>Parse Flightplan</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body onload="setup()">
+  <h1>Parse Flightplan</h1>
+
+  <div class="floatleft">
+  <textarea id="fp" ondrop="dropfp()"></textarea>
+  </div>
+
+  <div id="edit" class="floatleft">
+  <input type="button" value="Parse" onclick="Parse()">
+  </div>
+
+  <div id="routetable" class="floatleft"></div>
+
+  <div class="divider"></div>
+
+  <div class="floatleft">
+  <textarea id="status" value="Status..."></textarea>
+  </div>
+
+  <script src="img/jquery.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

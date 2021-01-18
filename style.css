@@ -1,0 +1,35 @@
+body {
+  background: #fafafa;
+}
+
+#fp
+{
+  width:400px;
+  height:400px;
+}
+
+#status
+{
+  width:400px;
+  height:100px;
+}
+
+.floatleft
+{
+  float:left;
+}
+
+#edit
+{
+  padding-left:20px;
+}
+
+table
+{
+  padding-left:20px;
+}
+
+td
+{
+  padding-left:10px;
+}
