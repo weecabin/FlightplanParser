@@ -98,7 +98,7 @@ function UpdateLatLonTable(routeobj=routelist)
   for (let fix of routeobj)
   {
     AddStatus("fix="+JSON.stringify(fix));
-    wptable.AddRow([fix.id,fix.lat,fix.lon,fix.dy,fix.y,fix.dx,fix.x])
+    wptable.AddRow([fix.name,Number(fix.lat).toFixed(6),Number(fix.lon).toFixed(6),Number(fix.dy).toFixed(4),Number(fix.y).toFixed(4),Number(fix.dx).toFixed(4),Number(fix.x).toFixed(4)])
   }
   get("routetable").innerHTML=wptable.GetHTML();
 }
@@ -140,3 +140,4 @@ function PlotPoints()
 
   DrawPath(plotpoints);
 }
+
