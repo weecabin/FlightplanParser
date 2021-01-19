@@ -2,6 +2,19 @@ body {
   background: #fafafa;
 }
 
+#canvasdiv
+{
+  float:left;
+  width:400px;
+  height:400px;
+  border:2px solid;
+  background-color: red;
+  padding:10px;
+}
+#canvas
+{
+  background-color: yellow;
+}
 .divider {
   height: 2px;
   clear: both;
@@ -11,12 +24,12 @@ body {
 #fp
 {
   width:400px;
-  height:400px;
+  height:200px;
 }
 
 #status
 {
-  width:400px;
+  width:600px;
   height:100px;
 }
 
@@ -30,7 +43,7 @@ body {
   padding-left:20px;
 }
 
-table
+#routelatlon
 {
   padding-left:20px;
 }

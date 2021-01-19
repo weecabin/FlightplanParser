@@ -6,8 +6,8 @@
   <title>Parse Flightplan</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body onload="setup()">
-  <h1>Parse Flightplan 004</h1>
+<body onload="SetupParseFlightplan()">
+  <h1>Parse Flightplan</h1>
 
   <div class="floatleft">
   <textarea id="fp" ondrop="dropfp()"></textarea>
@@ -15,17 +15,24 @@
 
   <div id="edit" class="floatleft">
   <input type="button" value="Parse" onclick="Parse()">
+  <input type="button" value="Plot Points" onclick="PlotPoints()">
   </div>
 
-  <div id="routetable" class="floatleft"></div>
-
+  <div id="canvasdiv">
+    <canvas id="canvas" width="400" height="400">
+    Your browser does not support the HTML canvas tag.</canvas>
+  </div>
   <div class="divider"></div>
+
+  <div id="routetable" class="floatleft"></div>
 
   <div class="floatleft">
   <textarea id="status" value="Status..."></textarea>
   </div>
 
   <script src="img/jquery.min.js"></script>
+  <script src="../Flight Functions/script.js"></script>
+  <script src="../Library 2/script.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
