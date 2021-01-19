@@ -1,52 +1,25 @@
-class MyTable
-{
-  // headings is an array of headings
-  constructor(headings,tblid="",tblclass="")
-  {
-    let tblidstr=tblid.length>0?" id=\""+tblid+"\"":"";
-    let tblclassstr=tblid.length>0?" class=\""+tblclass+"\"":"";
-    this.tbl="<table"+tblidstr+tblclassstr+"><tr>";
-    AddStatus("table tag="+this.tbl);
-    for(let heading of headings)
-    {
-      this.tbl += "<th>"+heading+"</th>";
-    }
-    this.tbl += "</tr>"
-  }
-  AddRow(values)
-  {
-    this.tbl+="<tr>"
-    for(let value of values)
-    {
-      this.tbl += "<td>"+value+"</td>"
-    }
-    this.tbl += "</tr>"
-  }
-  GetHTML()
-  {
-    this.tbl+="</table>"
-    return this.tbl;
-  }
-}
-
-$(function() {
-  console.log('Parse Flightplan');
-});
-
-var statusbox;
 var flightplan;
 
-function get(id)
-{
-  return document.getElementById(id);
-}
 
-function setup()
+function SetupParseFlightplan()
 {
-  statusbox=get("status");
   flightplan=get("fp");
   AddStatus("Status...");
+
+  let canvasdiv = document.getElementById("canvasdiv"); 
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d");
+
+  canvas.width=400;
+  canvas.heighht=400;
+
+  this.ctx.translate(0,this.canvas.height)
+  this.ctx.scale(1,-1);
+
+  DrawPath([[0,0],[400,400]]);
+  DrawPath([[0,400],[400,0]]);
 }
+
 
 function dropfp(event) 
 {
@@ -56,12 +29,8 @@ function dropfp(event)
   AddStatus("Files dropped = "+files.length)*/
 }
 
-function AddStatus(str)
-{
-  statusbox.value += "\n"+str;
-}
-
-var testcount=0;
+//var testcount=0;
+var routeList;
 function Parse()
 {
   try
@@ -102,7 +71,7 @@ function Parse()
     AddStatus(route.length+" route points");
     let i = 0;
     AddStatus("Route with lat/lon...");
-    let wptable = new MyTable(["Name","Latitude","Longitude"],"routelatlon","floatleft");
+    routelist=[];
     for(let routepoint of route)
     {
       let wp = routepoint.childNodes[0].nodeValue;
@@ -110,12 +79,64 @@ function Parse()
       let lon = wplookup.filter(x=>x.id==wp)[0].lon;
       let wpstr = wp+" = ("+lat+","+lon+")";
       AddStatus(wpstr);
-      wptable.AddRow([wp,lat,lon]);
+      routelist.push({name:wp,lat:lat,lon:lon,dx:0,x:0,dy:0,y:0});
     }
-    get("routetable").innerHTML=wptable.GetHTML();
+    UpdateLatLonTable();
   }
   catch(err)
   {
     AddStatus(err.message);
   }
+}
+
+function UpdateLatLonTable(routeobj=routelist)  
+{
+  AddStatus("in UpdateLatLonTable");
+  AddStatus("routeobj...");
+  AddStatus(JSON.stringify(routeobj));
+  let wptable = new MyTable(["Name","Latitude","Longitude","dy","y","dx","x"],"routelatlon","floatleft");
+  for (let fix of routeobj)
+  {
+    AddStatus("fix="+JSON.stringify(fix));
+    wptable.AddRow([fix.id,fix.lat,fix.lon,fix.dy,fix.y,fix.dx,fix.x])
+  }
+  get("routetable").innerHTML=wptable.GetHTML();
+}
+
+function PlotPoints()
+{
+  ClearCanvas();
+  //AddStatus("Route...");
+  //AddStatus("routelist...");
+  //AddStatus(JSON.stringify(routelist));
+  let prevfix;
+  let plotpoints=[];
+  for(let fix of routelist)
+  {
+    //AddStatus("fix="+JSON.stringify(fix));
+    if (prevfix==undefined)
+    {
+      fix.dx=0;
+      fix.dy=0;
+      plotpoints.push([0,0]);
+    }
+    else
+    {
+      let dxdy=DistHeadingDxDy(Number(prevfix.lat),Number(prevfix.lon),
+               Number(fix.lat),Number(fix.lon));
+      //AddStatus("dxdy="+dxdy);
+      fix.dx=dxdy[2];
+      fix.dy=dxdy[3];
+      fix.x=prevfix.x+fix.dx;
+      fix.y=prevfix.y+fix.dy;
+      plotpoints.push([Number(fix.x),Number(fix.y)]);
+    }
+    prevfix=JSON.parse(JSON.stringify(fix));
+    //AddStatus("prevfix="+JSON.stringify(prevfix));
+  }
+  AddStatus("Route with dx dy");
+  AddStatus(JSON.stringify(routelist));
+  UpdateLatLonTable();
+
+  DrawPath(plotpoints);
 }
