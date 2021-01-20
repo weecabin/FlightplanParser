@@ -1,12 +1,54 @@
+
+/*************************************************************
+**************************************************************
+FunctionName:
+
+Description
+
+Parameters
+
+Return Value
+
+*************************************************************/ 
+
 var canvas;
 var ctx;
 
+/*************************************************************
+**************************************************************
+FunctionName: get
+
+Description
+returns a reference to the HTML element with an id of id
+
+Parameters
+id: the id of the element to return
+
+Return Value
+reference to the specified HTML element
+*************************************************************/ 
 function get(id)
 {
   return document.getElementById(id);
 }
 
-//var statusbox;
+/*************************************************************
+**************************************************************
+FunctionName: AddStatus
+
+Description
+Appends a string to an HTML element with an id of "status"
+Should be a textarea. Normally used to display debug info
+when debugMode is set to true. debugMode=false can be overridden
+by setting alwaysShow to true
+
+Parameters
+str: the string to add to the status element
+alwaysShow: set true to always add str independent of debugMode
+
+Return Value
+none
+*************************************************************/ 
 var debugMode=false;
 function AddStatus(str,alwaysShow=false)
 {
@@ -14,6 +56,17 @@ function AddStatus(str,alwaysShow=false)
     get("status").value += "\n"+str;
 }
 
+/*************************************************************
+**************************************************************
+Class Name:           MyTable
+
+Description
+
+Parameters
+
+Return Value
+
+*************************************************************/ 
 class MyTable
 {
   /*
@@ -52,8 +105,40 @@ class MyTable
 
 /*************************************************************
 **************************************************************
+AverageData
+data: is a array of data sets [[a1,b1,c1...],[a2,b2,c2...], ...]
+Returns an array of data containing the average of each point.
+
+**************************************************************
+*************************************************************/ 
+function AverageData(data)
+{
+  // create a zeroed out array used to accumumate each element
+  let average=[];
+  for (let i=0;i<data[0].length;i++)
+  {
+    average.push(0);
+  }
+  for (let pointarray of data)
+  { 
+    for (let i=0;i<pointarray.length;i++)
+    {
+      average[i]+=pointarray[i];
+      AddStatus(average);
+    }
+  }
+  for (let i=0;i<average.length;i++)
+  {
+    average[i]/=data.length;
+  }
+  return average;
+}
+
+
+/*************************************************************
+**************************************************************
 NormalizeData
-data: is a array of x,y data pairs [[x1,y1,[x2,y2], ...]
+data: is a array of x,y data pairs [[x1,y1],[x2,y2], ...]
 Returns an array of x,y data pairs.
 
 Moves all data so its contained in the first quadrant.
