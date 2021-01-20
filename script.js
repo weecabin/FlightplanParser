@@ -160,6 +160,7 @@ function PlotPoints()
   //AddStatus(JSON.stringify(routelist));
   let prevfix;
   let plotpoints=[];
+  let fix0=routelist[0];
   for(let fix of routelist)
   {
     //AddStatus("fix="+JSON.stringify(fix));
@@ -171,13 +172,13 @@ function PlotPoints()
     }
     else
     {
-      let dxdy=DistHeadingDxDy(Number(prevfix.lat),Number(prevfix.lon),
+      let dxdy=DistHeadingDxDy(Number(fix0.lat),Number(fix0.lon),
                Number(fix.lat),Number(fix.lon));
       //AddStatus("dxdy="+dxdy);
       fix.dx=dxdy[2];
       fix.dy=dxdy[3];
-      fix.x=prevfix.x+fix.dx;
-      fix.y=prevfix.y+fix.dy;
+      fix.x=fix0.x+fix.dx;
+      fix.y=fix0.y+fix.dy;
       plotpoints.push([Number(fix.x),Number(fix.y)]);
     }
     prevfix=JSON.parse(JSON.stringify(fix));
