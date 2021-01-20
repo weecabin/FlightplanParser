@@ -1,10 +1,34 @@
 var flightplan;
 
+let findCount=1;
+function FindInStatus()
+{
+  console.log("Entering FindInStatus")
+  findCount=1;
+  let srchstr=get("srchtext").value;
+  console.log(srchstr);
+  if (srchstr.length>0)
+  {
+    console.log("searching");
+    let statusbox=get("status")
+    let offset=Occurence(findCount,srchstr,statusbox.value);
+    console.log("Offset="+offset);
+    setCaretToPos(statusbox, offset)
+  }
+  console.log("Exiting FindInStatus");
+}
+
+function FindNextInStatus()
+{
+  get("status").value="";
+  AddStatus("something to search");
+  AddStatus("something else to search");
+}
 
 function SetupParseFlightplan()
 {
   flightplan=get("fp");
-  AddStatus("Status...");
+  AddStatus("Status..."+(debugMode?" Debug on":" Debug off"),true);
 
   let canvasdiv = document.getElementById("canvasdiv"); 
   canvas = document.getElementById("canvas");
@@ -85,7 +109,7 @@ function Parse()
   }
   catch(err)
   {
-    AddStatus(err.message);
+    AddStatus(err.message,true);
   }
 }
 
@@ -137,7 +161,7 @@ function PlotPoints()
   AddStatus("Route with dx dy");
   AddStatus(JSON.stringify(routelist));
   UpdateLatLonTable();
-
-  DrawPath(plotpoints);
+  let showvertices=true;
+  DrawPath(plotpoints,showvertices,Number(get("declination").value));
 }
 

@@ -6,10 +6,12 @@ function get(id)
   return document.getElementById(id);
 }
 
-var statusbox;
-function AddStatus(str)
+//var statusbox;
+var debugMode=false;
+function AddStatus(str,alwaysShow=false)
 {
-  get("status").value += "\n"+str;
+  if (debugMode || alwaysShow)
+    get("status").value += "\n"+str;
 }
 
 class MyTable
@@ -48,52 +50,129 @@ class MyTable
   }
 }
 
-function DrawPath(plotpoints,showVertices=true)
+/*************************************************************
+**************************************************************
+NormalizeData
+data: is a array of x,y data pairs [[x1,y1,[x2,y2], ...]
+Returns an array of x,y data pairs.
+
+Moves all data so its contained in the first quadrant.
+In other words all x and y values are positive.
+**************************************************************
+*************************************************************/ 
+function NormalizeData(data,rotate=0)
+{
+  try
+  {
+    AddStatus("Entering NormalizeData");
+    AddStatus("input data\n"+JSON.stringify(data));
+    let xmin;
+    let xmax;
+    let ymin;
+    let ymax;
+    for (let point of data)
+    {
+      let x=point[0];
+      let y=point[1];
+      //AddStatus("x,y"+x+","+y);
+      if (xmin==undefined)
+      {
+        xmin=xmax=x;
+        ymin=ymax=y;
+      }
+      else
+      {
+        if (x<xmin)xmin=x;
+        if (x>xmax)xmax=x;
+        if (y<ymin)ymin=y;
+        if (y>ymax)ymax=y;
+      }
+    }
+    let xoffset=-xmin;
+    let yoffset=-ymin;
+    //AddStatus("x/y offsets:"+xoffset+","+yoffset);
+    var retdata=[];
+    for (let point of data)
+    {
+      retdata.push([point[0]+xoffset,point[1]+yoffset]);
+    }
+    AddStatus("Normalized data\n"+JSON.stringify(retdata));
+    // if rotating, rotate all points relative to 0,0 then
+    // normalize again.
+    if (rotate!=0)
+    {
+      AddStatus("Rotating data");
+      let rotangle=rotate*Math.PI/180;
+      let rotdata=[];
+      for (let point of retdata)
+      {
+        let x = point[0];
+        let y = point[1];
+        if(x==0 && y==0)
+        {
+          //AddStatus("x==0 && y==0");
+          rotdata.push(point);
+        }
+        else if (x==0)
+        { 
+          //AddStatus("x==0");
+          // the point is on the y axis
+          let newy = y*Math.cos(rotangle);
+          let newx = -y*Math.sin(rotangle);
+          rotdata.push([newx,newy]);
+        }
+        else if (y==0)
+        {
+          //AddStatus("y==0");
+          let newx = point[0]*Math.cos(rotangle);
+          let newy = point[0]*Math.sin(rotangle);
+          rotdata.push([newx,newy]);
+        }
+        else
+        {
+          // get the current angle and length 
+          let ca = Math.atan(y/x);
+          let r = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
+          let newangle = ca + rotangle;
+          let newx = r * Math.cos(newangle);
+          let newy = r * Math.sin(newangle);
+          rotdata.push([newx,newy]);
+        }
+      }
+      AddStatus("Rotated data\n"+JSON.stringify(rotdata));
+      return NormalizeData(rotdata);
+    }
+    AddStatus("Exiting NormalizeData");
+    return {data:retdata,xrange:xmax-xmin,yrange:ymax-ymin};
+  }
+  catch(err)
+  {
+    AddStatus(err,true);
+  }
+}
+
+function DrawPath(plotpoints,showVertices=true,declination=0)
 {
   AddStatus("Entering DrawPath");
     // make the data fit the plot
   // find the extremes of the data
-  let xmin;
-  let xmax;
-  let ymin;
-  let ymax;
-  AddStatus("plotpoints"+JSON.stringify(plotpoints));
-  for (let point of plotpoints)
-  {
-    let x=point[0];
-    let y=point[1];
-    AddStatus("x,y"+x+","+y);
-    if (xmin==undefined)
-    {
-      xmin=xmax=x;
-      ymin=ymax=y;
-    }
-    else
-    {
-      if (x<xmin)xmin=x;
-      if (x>xmax)xmax=x;
-      if (y<ymin)ymin=y;
-      if (y>ymax)ymax=y;
-    }
-  }
-  let xoffset=-xmin;
-  let yoffset=-ymin;
-  AddStatus("x/y offsets:"+xoffset+","+yoffset);
-  
+
+  let norm=NormalizeData(plotpoints,declination);
+  AddStatus(JSON.stringify(norm));
   /*
   calculate a single mulitplier used to scale all data to fit inside the plot extents.
   */
   let xmult=ymult=mult=1;
   AddStatus("multipliers="+xmult+","+ymult+","+mult);
   AddStatus("canvas="+canvas.width+","+canvas.height);
-  if (xmax==xmin)
+  if (norm.xrange==0)
     xmult=1;
   else
-    xmult=canvas.width/(xmax-xmin);
-  if (ymax==ymin)
+    xmult=canvas.width/(norm.xrange);
+  if (norm.yrange==0)
     ymult=1;
   else
-    ymult=canvas.height/(ymax-ymin);
+    ymult=canvas.height/(norm.yrange);
   // to keep the drawing to scale, only use one multiplier for x and y
   if ((xmult>=1 && ymult>=1))
     mult=xmult>ymult?ymult:xmult;
@@ -102,10 +181,10 @@ function DrawPath(plotpoints,showVertices=true)
   AddStatus("multipliers x,y,selected="+xmult+","+ymult+","+mult);
 
   let firstpoint=true;
-  for (let point of plotpoints)
+  for (let point of norm.data)
   {
-    let x = (point[0]+xoffset)*mult;
-    let y = (point[1]+yoffset)*mult;
+    let x = (point[0])*mult;
+    let y = (point[1])*mult;
     AddStatus("plot x,y ="+x+","+y);
     if (firstpoint)
     {
@@ -123,15 +202,16 @@ function DrawPath(plotpoints,showVertices=true)
   if(showVertices)
   {
   AddStatus("Drawing Vertices");
-    for(let point of plotpoints)
+    for(let point of norm.data)
     {
-      let x = (point[0]+xoffset)*mult;
-      let y = (point[1]+yoffset)*mult;
+      let x = (point[0])*mult;
+      let y = (point[1])*mult;
       ctx.beginPath();
       ctx.arc(x, y, 3, 0, 2 * Math.PI);
       ctx.stroke();
     }
   }
+  AddStatus("Exiting DrawPath");
 }
 
 function ClearCanvas()
@@ -151,7 +231,100 @@ function ClearCanvas()
   }
   catch(err)
   {
-    AddStatus(err.message ,false,true);
+    AddStatus(err.message,true);
   }
   AddStatus("Exiting ClearCanvas");
+}
+
+/*
+finds a string bracketed by other strings
+stringToSearch:
+The string to search...
+"find something is this string string. the target will be identified below"
+
+locate:
+multidimensional array of search parameters...
+[2,"string"],
+[1,"the "],
+[1," will"]
+will find in succession, the 2nd occurance of "string"
+then the first occurance of "the "
+then the frst occursnce of " will"
+it will return the string bracketed by the last two search parameters,
+or in this case, the string between "the " and " will"
+*/
+function FindBracketed(stringToSearch,locate,substitute)
+{
+  //console.log(locate)
+  let sub = stringToSearch;
+  let n = Occurence(locate[0][0], locate[0][1], sub);
+  if (n<0)return "";
+  sub = sub.substring(n)
+  if (locate.length==1) return sub;
+  sub = sub.substring(locate[0][1].length)
+  //console.log("locate.lenght="+locate.length)
+  for (let i=1;i<locate.length;i++)
+  { 
+    //console.log("loop index ",i)
+    n = Occurence(locate[i][0], locate[i][1], sub);
+    if (n<0)return "";
+    if (i>=locate.length-1)
+    {
+      let ret = sub.substring(0,n);
+      if (substitute!=undefined)
+      {
+        for (ri=0;ri< substitute.length;ri++)
+        {
+          ret = ret.replace(substitute[ri][0], substitute[ri][1])
+        }
+      }
+      return ret;
+    }
+    sub = sub.substring(n+ locate[i][1].length)
+    //console.log(sub)
+  }
+  return sub;
+}
+
+// returns the offset into mainstr for the n'th (count) searchstr'
+function Occurence(count,searchstr,mainstr)
+{
+  //console.log("Occurance:"+count+"/"+searchstr+"/"+ mainstr)
+  let offset=0;
+  for (let i=0;i<count;i++)
+  {
+    let n = mainstr.substring(offset).indexOf(searchstr);
+    if (n>=0)
+    {
+      offset+=n+ searchstr.length;
+    }
+    else
+    {
+      //console.log("error");
+      return -1
+    }
+    //console.log(offset);
+    //console.log(mainstr.substring(offset)) 
+  }
+  let ret= offset-searchstr.length;
+  //console.log("Occurance:"+mainstr.substring(ret))
+  return ret;
+}
+
+function setSelectionRange(input, selectionStart, selectionEnd) {
+  if (input.setSelectionRange) {
+    input.focus();
+    input.setSelectionRange(selectionStart, selectionEnd);
+  }
+  else if (input.createTextRange) {
+    var range = input.createTextRange();
+    range.collapse(true);
+    range.moveEnd('character', selectionEnd);
+    range.moveStart('character', selectionStart);
+    range.select();
+  }
+}
+
+function setCaretToPos (input, pos) {
+   setSelectionRange(input, pos, pos);
 }
