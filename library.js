@@ -103,9 +103,15 @@ class MyTable
   }
 }
 
-/*************************************************************
 **************************************************************
                    AverageData
+Description
+returns a number of numerical calculations on each point in
+the dataset. returns an object with the results of the calculations.
+currently supports average, min and max, but can be easily extended
+by adding new operations in the return object without breaking 
+the legacy set.
+
 Parameters
 data: is a array of data sets [[a1,b1,c1...],[a2,b2,c2...], ...]
  
@@ -116,7 +122,6 @@ the average of each point in the dataset
 minimum value
 maximipun
 
-**************************************************************
 *************************************************************/ 
 function AverageData(data)
 {
