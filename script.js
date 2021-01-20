@@ -1,10 +1,21 @@
+
 var flightplan;
 
-let findCount=1;
-function FindInStatus()
+function ClearFlightplan()
 {
+  flightplan.value="";
+}
+
+function ClearStatus()
+{
+  get("status").value="";
+}
+
+let findCount=1;
+function FindInStatus(count=1)
+{
+  findCount=count;
   console.log("Entering FindInStatus")
-  findCount=1;
   let srchstr=get("srchtext").value;
   console.log(srchstr);
   if (srchstr.length>0)
@@ -12,17 +23,31 @@ function FindInStatus()
     console.log("searching");
     let statusbox=get("status")
     let offset=Occurence(findCount,srchstr,statusbox.value);
-    console.log("Offset="+offset);
-    setCaretToPos(statusbox, offset)
+    if (offset!=-1)
+    {
+      console.log("Offset="+offset);
+      setCaretToPos(statusbox, offset, srchstr.length)
+    }
+    else
+    {
+      setCaretToPos(statusbox,0);
+      findCount=0;
+    }
   }
   console.log("Exiting FindInStatus");
 }
 
 function FindNextInStatus()
 {
-  get("status").value="";
-  AddStatus("something to search");
-  AddStatus("something else to search");
+  FindInStatus(++findCount);
+}
+
+function DebugMode()
+{
+  if (get("debug").checked)
+    debugMode=true;
+  else
+    debugMode=false;
 }
 
 function SetupParseFlightplan()

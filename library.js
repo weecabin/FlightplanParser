@@ -180,11 +180,31 @@ function DrawPath(plotpoints,showVertices=true,declination=0)
     mult=xmult>ymult?ymult:xmult;
   AddStatus("multipliers x,y,selected="+xmult+","+ymult+","+mult);
 
+  // center the range that doesnt use the full extents
+  let xdelta=norm.xrange*mult
+  let ydelta=norm.yrange*mult;
+  let xspace=Math.abs(canvas.width-xdelta);
+  let yspace=Math.abs(canvas.height-ydelta);
+  AddStatus("x delta/space "+xdelta+","+xspace,true);
+  AddStatus("y delta/space "+ydelta+","+yspace,true);
+  if (xspace<yspace)
+  {
+    xspace=0;
+    yspace/=2;
+  }
+  else
+  { 
+    xspace/=2;
+    yspace=0;
+  }
+  AddStatus("xspace "+xspace);
+  AddStatus("yspace "+yspace);
+
   let firstpoint=true;
   for (let point of norm.data)
   {
-    let x = (point[0])*mult;
-    let y = (point[1])*mult;
+    let x = xspace+(point[0])*mult;
+    let y = yspace+(point[1])*mult;
     AddStatus("plot x,y ="+x+","+y);
     if (firstpoint)
     {
@@ -204,8 +224,8 @@ function DrawPath(plotpoints,showVertices=true,declination=0)
   AddStatus("Drawing Vertices");
     for(let point of norm.data)
     {
-      let x = (point[0])*mult;
-      let y = (point[1])*mult;
+      let x = xspace+(point[0])*mult;
+      let y = yspace+(point[1])*mult;
       ctx.beginPath();
       ctx.arc(x, y, 3, 0, 2 * Math.PI);
       ctx.stroke();
@@ -314,7 +334,9 @@ function Occurence(count,searchstr,mainstr)
 function setSelectionRange(input, selectionStart, selectionEnd) {
   if (input.setSelectionRange) {
     input.focus();
-    input.setSelectionRange(selectionStart, selectionEnd);
+    //input.setSelectionRange(selectionStart, selectionEnd);
+    input.selectionStart=selectionStart;
+    input.selectionEnd=selectionEnd;
   }
   else if (input.createTextRange) {
     var range = input.createTextRange();
@@ -325,6 +347,9 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
   }
 }
 
-function setCaretToPos (input, pos) {
-   setSelectionRange(input, pos, pos);
+function setCaretToPos (input, pos,length=1) 
+{
+  setSelectionRange(input, pos, pos+length);
+  input.blur();
+  input.focus()
 }
