@@ -11,10 +11,12 @@ body {
   background-color: red;
   padding:10px;
 }
+
 #canvas
 {
   background-color: yellow;
 }
+
 .divider {
   height: 2px;
   clear: both;
@@ -30,7 +32,7 @@ body {
 #status
 {
   width:600px;
-  height:100px;
+  height:200px;
 }
 
 .floatleft
@@ -46,6 +48,16 @@ body {
 #routelatlon
 {
   padding-left:20px;
+  width:600px;
+  height:200px;
+}
+
+#routetable
+{
+  overflow-y:auto;
+  max-height: 150px;
+  min-width: 400px;
+  border-style: ridge;
 }
 
 td
