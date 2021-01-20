@@ -61,11 +61,26 @@ function AddStatus(str,alwaysShow=false)
 Class Name:           MyTable
 
 Description
+helper class to facilitate the creation of javascript created
+tables. 
 
-Parameters
+Constructor
+headings: an array of strings to be used as table headings 
+tblid: (optional) the id of the table
+tblclass:(optional) the tables classname 
 
-Return Value
+note... to specify the class but not the id, set the tblid
+parameter to undefined.
 
+Methods...
+AddRow(values)
+adds a datarow to the table
+values: is an array of objects that will fill the row.
+
+note... call as many times as you have rows of data.
+
+GetHTML()
+returns an HTML formatted string representing the table. 
 *************************************************************/ 
 class MyTable
 {
@@ -103,6 +118,7 @@ class MyTable
   }
 }
 
+/*************************************************************
 **************************************************************
                    AverageData
 Description
@@ -154,13 +170,22 @@ function AverageData(data)
 
 /*************************************************************
 **************************************************************
-NormalizeData
-data: is a array of x,y data pairs [[x1,y1],[x2,y2], ...]
-Returns an array of x,y data pairs.
-
+                    NormalizeData
+Description
 Moves all data so its contained in the first quadrant.
 In other words all x and y values are positive.
-**************************************************************
+
+Parameters
+data: is a array of x,y data pairs [[x1,y1],[x2,y2], ...]
+rotate: (optional)
+if specified, will rotate all data the specified number of degrees.
+
+Return Value
+Returns an object containing an array of normalized x,y data 
+pairs (data:), the range of x values (xrange:) and the range of
+y values (yrange:)...
+{data:retdata,xrange:xmax-xmin,yrange:ymax-ymin};
+
 *************************************************************/ 
 function NormalizeData(data,rotate=0)
 {
