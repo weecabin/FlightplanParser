@@ -105,9 +105,16 @@ class MyTable
 
 /*************************************************************
 **************************************************************
-AverageData
+                   AverageData
+Parameters
 data: is a array of data sets [[a1,b1,c1...],[a2,b2,c2...], ...]
-Returns an array of data containing the average of each point.
+ 
+Return Value
+An array object containing at the present time
+{avg:[],min:[],max:[]...?}
+the average of each point in the dataset
+minimum value
+maximipun
 
 **************************************************************
 *************************************************************/ 
@@ -115,23 +122,28 @@ function AverageData(data)
 {
   // create a zeroed out array used to accumumate each element
   let average=[];
+  let min=[];
+  let max=[];
   for (let i=0;i<data[0].length;i++)
   {
     average.push(0);
+    min[i]=data[0][i];
+    max[i]=data[0][i];
   }
   for (let pointarray of data)
   { 
     for (let i=0;i<pointarray.length;i++)
     {
       average[i]+=pointarray[i];
-      AddStatus(average);
+      if(pointarray[i]<min[i])min[i]=pointarray[i];
+      if(pointarray[i]>max[i])max[i]=pointarray[i];
     }
   }
   for (let i=0;i<average.length;i++)
   {
     average[i]/=data.length;
   }
-  return average;
+  return {avg:average,min:min,max:max}
 }
 
 
