@@ -51,6 +51,7 @@ none
 var debugMode=false;
 function AddStatus(str,alwaysShow=false)
 {
+  if (str==undefined)str="";
   if (debugMode || alwaysShow)
     get("status").value += "\n"+str;
 }
