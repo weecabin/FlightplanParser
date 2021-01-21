@@ -385,6 +385,19 @@ function DrawPath(plotpoints,showVertices=true,rotate=0)
   AddStatus("Exiting DrawPath");
 }
 
+/*************************************************************
+**************************************************************
+                        ClearCanvas
+Description
+Saves the current draw context, clears the canvas, and restores
+the drawing canvas.
+
+Parameters
+uses the global canvas and drawing context (ctx)
+
+Return Value
+cleared canvas
+*************************************************************/ 
 function ClearCanvas()
 {
   AddStatus("Entering ClearCanvas");
@@ -407,8 +420,14 @@ function ClearCanvas()
   AddStatus("Exiting ClearCanvas");
 }
 
-/*
+/*************************************************************
+**************************************************************
+                          FindBracketed
+
+Description
 finds a string bracketed by other strings
+
+Parameters
 stringToSearch:
 The string to search...
 "find something is this string string. the target will be identified below"
@@ -423,7 +442,10 @@ then the first occurance of "the "
 then the frst occursnce of " will"
 it will return the string bracketed by the last two search parameters,
 or in this case, the string between "the " and " will"
-*/
+
+Return Value
+the bracketed string
+*************************************************************/ 
 function FindBracketed(stringToSearch,locate,substitute)
 {
   //console.log(locate)
@@ -457,7 +479,26 @@ function FindBracketed(stringToSearch,locate,substitute)
   return sub;
 }
 
-// returns the offset into mainstr for the n'th (count) searchstr'
+/*************************************************************
+**************************************************************
+                       Occurence
+Description
+Returns the offset into mainstr for the n'th (count) occurance of searchstr'
+
+Parameters
+count:
+the occurance of searchstr to find
+
+searchstr:
+the string to find
+
+mainstr:
+the string to search
+
+Return Value
+The offset into searchstring where the count occurance of searchstr
+was found.
+*************************************************************/ 
 function Occurence(count,searchstr,mainstr)
 {
   //console.log("Occurance:"+count+"/"+searchstr+"/"+ mainstr)
@@ -482,6 +523,18 @@ function Occurence(count,searchstr,mainstr)
   return ret;
 }
 
+/*************************************************************
+**************************************************************
+                         setSelectionRange
+
+Description
+
+Parameters
+
+Return Value
+
+*************************************************************/ 
+
 function setSelectionRange(input, selectionStart, selectionEnd) {
   if (input.setSelectionRange) {
     input.focus();
@@ -497,6 +550,18 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
     range.select();
   }
 }
+
+/*************************************************************
+**************************************************************
+                       setCaretToPos
+
+Description
+
+Parameters
+
+Return Value
+
+*************************************************************/ 
 
 function setCaretToPos (input, pos,length=1) 
 {
