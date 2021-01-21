@@ -526,13 +526,20 @@ function Occurence(count,searchstr,mainstr)
 /*************************************************************
 **************************************************************
                          setSelectionRange
-
 Description
+sets the selection in the control input, between selectionStart and 
+selectionEnd.
 
 Parameters
+input:
+The control in which to set the selection in.
+
+selectionStart/selectionEnd:
+the range of characters to select. set them to the same value
+to set ten cursor position.
 
 Return Value
-
+none.
 *************************************************************/ 
 
 function setSelectionRange(input, selectionStart, selectionEnd) {
@@ -554,13 +561,21 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
 /*************************************************************
 **************************************************************
                        setCaretToPos
-
 Description
-
+positions the cursor in the input control to pos characters in.
+use length to specify a range.
 Parameters
+input:
+The control in which to set the cursor in.
+
+pos:
+the character position to set the cursor to.
+
+length:
+specify a range by setting length greater than 1
 
 Return Value
-
+none
 *************************************************************/ 
 
 function setCaretToPos (input, pos,length=1) 
