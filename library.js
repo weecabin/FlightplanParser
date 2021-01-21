@@ -11,8 +11,7 @@ Return Value
 
 *************************************************************/ 
 
-var canvas;
-var ctx;
+
 
 /*************************************************************
 **************************************************************
@@ -278,13 +277,38 @@ function NormalizeData(data,rotate=0)
   }
 }
 
-function DrawPath(plotpoints,showVertices=true,declination=0)
+
+/*************************************************************
+**************************************************************
+                         DrawPath
+Description
+draws a line plot on the global variable canvas with the global 
+drawing context ctx. As a resul, they need to be setup before 
+calling DrawPath. I may rethink this, but for now thats the way 
+it works. 
+Two draw options are provided, to allow for adding 
+verticies, and for rotating the data.
+
+Parameters
+plotpoints:
+an array if x,y datapoints to plot
+showVerticies:
+boolean, if true will add small circles at each verticie in the plot
+rotate:
+the decimal degrees to rotate the data. default is 0.
+Return Value
+draws the plot in tje canvas.
+
+*************************************************************/ 
+var canvas;
+var ctx;
+function DrawPath(plotpoints,showVertices=true,rotate=0)
 {
   AddStatus("Entering DrawPath");
     // make the data fit the plot
   // find the extremes of the data
 
-  let norm=NormalizeData(plotpoints,declination);
+  let norm=NormalizeData(plotpoints,rotate);
   AddStatus(JSON.stringify(norm));
   /*
   calculate a single mulitplier used to scale all data to fit inside the plot extents.
